@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jules' Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f6f3;
+      --surface: #ffffff;
+      --border: #e2e0da;
+      --border-hover: #c8c5bc;
+      --text: #1a1917;
+      --text-muted: #8a8680;
+      --text-light: #b8b4ae;
+      --accent: #2a2825;
+      --tag-bg: #eeece8;
+      --tag-text: #6b6860;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      --shadow-hover: 0 2px 8px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.08);
+      --radius: 12px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 24px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 64px 0 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+
+    h1 {
+      font-family: 'DM Mono', monospace;
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .header-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--tag-bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 400;
+    }
+
+    .header-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 300;
+      line-height: 1.6;
+      max-width: 420px;
+    }
+
+    /* ── SEARCH / FILTER ── */
+    .controls {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 0 0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+
+    input[type="search"] {
+      width: 100%;
+      padding: 9px 12px 9px 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="search"]:focus { border-color: var(--border-hover); }
+    input[type="search"]::placeholder { color: var(--text-light); }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .filter-btn:hover { border-color: var(--border-hover); color: var(--text); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* ── STATS BAR ── */
+    .stats {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 14px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stats-count {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* ── GRID ── */
+    .grid {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+      padding-bottom: 80px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .card.wip { opacity: 0.72; }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: var(--tag-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .card-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      font-weight: 400;
+    }
+
+    .status-live   { background: #eaf4ee; color: #3a7d52; }
+    .status-wip    { background: #fef6e4; color: #a0772a; }
+    .status-demo   { background: #eef2ff; color: #5469d4; }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      font-weight: 300;
+      flex: 1;
+      margin-bottom: 16px;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10.5px;
+      color: var(--text-light);
+    }
+
+    .card-arrow {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--tag-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .card:hover .card-arrow { background: var(--accent); }
+    .card:hover .card-arrow svg { color: #fff; }
+
+    /* ── ADD CARD ── */
+    .card-add {
+      border: 1.5px dashed var(--border);
+      background: transparent;
+      box-shadow: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 160px;
+      opacity: 0.7;
+      cursor: default;
+    }
+
+    .card-add:hover {
+      border-color: var(--border-hover);
+      transform: none;
+      box-shadow: none;
+      opacity: 1;
+    }
+
+    .card-add-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px dashed var(--border-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      font-size: 20px;
+      font-weight: 300;
+    }
+
+    .card-add-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      color: var(--text-light);
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 0;
+      color: var(--text-light);
+      font-size: 13px;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 520px) {
+      body { padding: 0 16px; }
+      header { padding: 40px 0 32px; }
+      h1 { font-size: 22px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── ANIMATIONS ── */
+    .card { animation: fadeUp 0.3s ease both; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Jules' Lab</h1>
+    <span class="header-badge">v1.0</span>
+  </div>
+  <p class="header-desc">Tous mes projets au même endroit — sites, apps, outils et expérimentations.</p>
+</header>
+
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="search" id="searchInput" placeholder="Rechercher un projet…" />
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <button class="filter-btn" data-filter="web">Web</button>
+    <button class="filter-btn" data-filter="hardware">Hardware</button>
+    <button class="filter-btn" data-filter="app">App</button>
+    <button class="filter-btn" data-filter="scolaire">Scolaire</button>
+  </div>
+</div>
+
+<div class="stats">
+  <span class="stats-count" id="statsCount"></span>
+</div>
+
+<div class="grid" id="grid">
+
+  <!-- ═══════════════════════════════════════════════
+       PROJETS — pour en ajouter un, copie un bloc
+       .card et modifie les infos. C'est tout !
+       ═══════════════════════════════════════════════ -->
+
+  <!--
+    TEMPLATE À COPIER :
+
+    <a class="card" href="URL_DU_SITE" target="_blank" rel="noopener"
+       data-tags="web,app,hardware,scolaire" data-title="Nom du projet">
+      <div class="card-header">
+        <div class="card-icon">🔧</div>
+        <span class="card-status status-live">live</span>
+      </span>  ← status-live | status-wip | status-demo
+      </div>
+      <div class="card-title">Nom du projet</div>
+      <div class="card-desc">Description courte du projet.</div>
+      <div class="card-tags">
+        <span class="tag">tag1</span>
+        <span class="tag">tag2</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-date">mars 2025</span>
+        <span class="card-arrow">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </span>
+      </div>
+    </a>
+  -->
+
+  <!-- PROJET 1 : SmartBinding -->
+  <a class="card" href="#" target="_blank" rel="noopener"
+     data-tags="scolaire,hardware" data-title="SmartBinding">
+    <div class="card-header">
+      <div class="card-icon">⛷️</div>
+      <span class="card-status status-demo">demo</span>
+    </div>
+    <div class="card-title">SmartBinding</div>
+    <div class="card-desc">Fixation de ski de rando connectée pour l'analyse biomécanique — capteurs FlexiForce, ESP32 & BLE.</div>
+    <div class="card-tags">
+      <span class="tag">STI2D</span>
+      <span class="tag">ESP32</span>
+      <span class="tag">BLE</span>
+      <span class="tag">capteurs</span>
+    </div>
+    <div class="card-footer">
+      <span class="card-date">2024 – 2025</span>
+      <span class="card-arrow">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </span>
+    </div>
+  </a>
+
+  <!-- PROJET 2 : Macropad ESP32 -->
+  <a class="card" href="#" target="_blank" rel="noopener"
+     data-tags="hardware" data-title="Macropad ESP32">
+    <div class="card-header">
+      <div class="card-icon">⌨️</div>
+      <span class="card-status status-live">live</span>
+    </div>
+    <div class="card-title">Macropad ESP32-S3</div>
+    <div class="card-desc">Macropad DIY à base d'ESP32-S3 avec intégration Home Assistant, écran OLED et touches programmables.</div>
+    <div class="card-tags">
+      <span class="tag">ESP32-S3</span>
+      <span class="tag">Home Assistant</span>
+      <span class="tag">DIY</span>
+      <span class="tag">OLED</span>
+    </div>
+    <div class="card-footer">
+      <span class="card-date">mars 2025</span>
+      <span class="card-arrow">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </span>
+    </div>
+  </a>
+
+  <!-- PROJET 3 : usageDirect -->
+  <a class="card" href="#" target="_blank" rel="noopener"
+     data-tags="app" data-title="usageDirect">
+    <div class="card-header">
+      <div class="card-icon">📱</div>
+      <span class="card-status status-wip">wip</span>
+    </div>
+    <div class="card-title">usageDirect</div>
+    <div class="card-desc">App Android de gestion d'usage refaite avec un design "Soft Dark Futurism" — modernisation complète de l'UI.</div>
+    <div class="card-tags">
+      <span class="tag">Android</span>
+      <span class="tag">UI/UX</span>
+      <span class="tag">Kotlin</span>
+    </div>
+    <div class="card-footer">
+      <span class="card-date">2025</span>
+      <span class="card-arrow">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </span>
+    </div>
+  </a>
+
+  <!-- CARTE "AJOUTER UN PROJET" — ne pas supprimer -->
+  <div class="card card-add" aria-hidden="true" id="addCard">
+    <div class="card-add-icon">+</div>
+    <span class="card-add-label">Ajouter un projet</span>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-text">jules' lab · <span id="year"></span></span>
+  <span class="footer-text">github pages</span>
+</footer>
+
+<script>
+  // ── Année auto
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ── Récupère toutes les cartes projet (pas la carte "ajouter")
+  const allCards = () => [...document.querySelectorAll('.card:not(.card-add)')];
+  const statsEl  = document.getElementById('statsCount');
+  const addCard  = document.getElementById('addCard');
+
+  function updateStats(visible) {
+    const total = allCards().length;
+    statsEl.textContent = visible === total
+      ? `${total} projet${total > 1 ? 's' : ''}`
+      : `${visible} / ${total} projet${total > 1 ? 's' : ''}`;
+  }
+
+  function applyFilters() {
+    const search     = document.getElementById('searchInput').value.toLowerCase().trim();
+    const activeBtn  = document.querySelector('.filter-btn.active');
+    const filter     = activeBtn ? activeBtn.dataset.filter : 'all';
+    let visibleCount = 0;
+
+    allCards().forEach(card => {
+      const title = (card.dataset.title || '').toLowerCase();
+      const desc  = (card.querySelector('.card-desc')?.textContent || '').toLowerCase();
+      const tags  = (card.dataset.tags || '').toLowerCase();
+
+      const matchSearch = !search || title.includes(search) || desc.includes(search) || tags.includes(search);
+      const matchFilter = filter === 'all' || tags.includes(filter);
+
+      if (matchSearch && matchFilter) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Affiche/cache la carte "ajouter" selon l'état des filtres
+    addCard.classList.toggle('hidden', !!(search || filter !== 'all'));
+
+    // Empty state
+    let emptyEl = document.getElementById('emptyState');
+    if (visibleCount === 0) {
+      if (!emptyEl) {
+        emptyEl = document.createElement('div');
+        emptyEl.id = 'emptyState';
+        emptyEl.className = 'empty';
+        emptyEl.textContent = 'Aucun projet trouvé.';
+        document.getElementById('grid').appendChild(emptyEl);
+      }
+    } else if (emptyEl) {
+      emptyEl.remove();
+    }
+
+    updateStats(visibleCount);
+  }
+
+  // ── Event listeners
+  document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  // ── Init
+  applyFilters();
+</script>
+
+</body>
+</html>

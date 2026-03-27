@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Une surprise pour toi...</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="main-card" class="card">
+        <div class="header-decor">✨ 💖 ✨</div>
+        <img id="status-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbM3CuzW8/giphy.gif" alt="Cute Cat">
+        
+        <div class="content">
+            <h1>Coucou toi...</h1>
+            <p class="story-text">
+                Depuis que je te connais, chaque jour ressemble à un petit bonus de bonheur. 
+                J'ai beaucoup réfléchi à la meilleure façon de te le demander, mais au final, 
+                les choses simples sont les meilleures...
+            </p>
+            <h2 id="question">Serais-tu d'accord pour être ma Valentine ?</h2>
+        </div>
+
+        <div class="btn-group">
+            <button id="yes-btn">Évidemment ! ❤️</button>
+            <button id="no-btn">Bof, non.</button>
+        </div>
+    </div>
+
+    <div id="success-screen" class="card hidden">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueXpueSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l41lH4ADRtAYnGsLe/giphy.gif" alt="Celebrate">
+        <h1>YEAAAAAAH ! 🎉</h1>
+        <p>Prépare-toi, ça va être une soirée mémorable !</p>
+        <button onclick="location.reload()">Recommencer (pour le plaisir)</button>
+    </div>
+
+    <div id="heart-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

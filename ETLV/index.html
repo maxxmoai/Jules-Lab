@@ -6,190 +6,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FrostDrone</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-  <!-- Barre de navigation -->
   <nav>
-    <div class="nav-logo">Frost<span>Drone</span></div>
-    <button id="langBtn">🌐 EN</button>
+    <p class="logo">FrostDrone</p>
+    <button id="langBtn">EN</button>
   </nav>
 
-  <!-- Section 1 : Accueil / Hero -->
+  <!-- Accueil -->
   <section id="accueil">
     <div class="hero-texte">
-      <p class="petit-titre" data-i18n="hero_tag">Drone climatiseur urbain</p>
       <h1>FrostDrone</h1>
-      <p class="slogan" data-i18n="slogan">« La fraîcheur là où vous en avez besoin. »</p>
-      <a href="#presentation" class="bouton" data-i18n="btn_decouvrir">En savoir plus</a>
+      <p class="slogan" data-i18n="slogan">Le drone qui rafraîchit la ville.</p>
+      <a href="#presentation" class="bouton" data-i18n="btn">En savoir plus</a>
     </div>
     <div class="hero-image">
-      <img src="drone.png" alt="Illustration du FrostDrone">
+      <img src="drone.png" alt="Photo du FrostDrone">
     </div>
   </section>
 
-  <!-- Section 2 : Présentation -->
+  <!-- Présentation -->
   <section id="presentation">
-    <h2 data-i18n="pres_titre">Présentation du drone</h2>
-    <div class="trois-colonnes">
+    <h2 data-i18n="pres_titre">Présentation</h2>
 
+    <div class="colonnes">
       <div class="carte">
-        <div class="icone">🌡️</div>
         <h3 data-i18n="c1_titre">Le problème</h3>
-        <p data-i18n="c1_texte">Les villes sont de plus en plus chaudes en été à cause des îlots de chaleur urbains. Le bitume stocke la chaleur et les climatiseurs aggravent le problème en rejetant encore plus de chaleur dans la rue.</p>
+        <p data-i18n="c1_texte">En été, les villes accumulent beaucoup de chaleur. Le bitume et le béton chauffent toute la journée. Les climatiseurs rejettent encore plus de chaleur dans la rue, ce qui aggrave le problème.</p>
       </div>
-
       <div class="carte">
-        <div class="icone">🚁</div>
         <h3 data-i18n="c2_titre">Le drone</h3>
-        <p data-i18n="c2_texte">FrostDrone a une forme de stalactite avec des rotors silencieux en haut. Son corps contient un matériau à changement de phase (MCP) qui emmagasine le froid pendant la nuit et le libère pendant la journée.</p>
+        <p data-i18n="c2_texte">FrostDrone est un drone en forme de stalactite. Son corps contient un matériau à changement de phase (MCP) qui stocke le froid la nuit et le libère pendant la journée.</p>
       </div>
-
       <div class="carte">
-        <div class="icone">❄️</div>
         <h3 data-i18n="c3_titre">Sa mission</h3>
-        <p data-i18n="c3_texte">Il se place en vol stationnaire au-dessus des arrêts de bus, des parcs ou des terrasses d'école pour créer une bulle d'air frais entre 18°C et 22°C sous lui.</p>
+        <p data-i18n="c3_texte">Il vole au-dessus des endroits chauds : arrêts de bus, parcs, terrasses d'école. Il souffle de l'air frais vers le bas pour rafraîchir les personnes en dessous.</p>
       </div>
-
     </div>
   </section>
 
-  <!-- Section 3 : Fonctionnement -->
-  <section id="fonctionnement" class="fond-clair">
+  <!-- Fonctionnement -->
+  <section id="fonctionnement">
     <h2 data-i18n="fonc_titre">Comment ça marche ?</h2>
-    <div class="etapes">
 
+    <div class="etapes">
       <div class="etape">
         <div class="numero">1</div>
-        <div class="etape-texte">
+        <div>
           <h3 data-i18n="e1_titre">La nuit : recharge</h3>
-          <p data-i18n="e1_texte">Le drone monte sur son toit de recharge. Des stations alimentées par panneaux solaires font recongeler le matériau MCP à l'intérieur du drone pour le soir.</p>
+          <p data-i18n="e1_texte">Le drone retourne sur le toit d'un bâtiment où une station solaire regèle son matériau MCP pendant la nuit.</p>
         </div>
       </div>
-
       <div class="etape">
         <div class="numero">2</div>
-        <div class="etape-texte">
-          <h3 data-i18n="e2_titre">Le jour : décollage</h3>
-          <p data-i18n="e2_texte">Grâce à ses capteurs thermiques, le drone détecte automatiquement les zones les plus chaudes de la ville ou les groupes de personnes en danger de chaleur.</p>
+        <div>
+          <h3 data-i18n="e2_titre">Le matin : décollage</h3>
+          <p data-i18n="e2_texte">Il décolle et repère grâce à ses capteurs les zones les plus chaudes ou les groupes de personnes exposées à la chaleur.</p>
         </div>
       </div>
-
       <div class="etape">
         <div class="numero">3</div>
-        <div class="etape-texte">
-          <h3 data-i18n="e3_titre">En mission : refroidissement</h3>
-          <p data-i18n="e3_texte">Il aspire l'air chaud par le haut, le fait passer à travers son corps glacé, puis rejette un flux d'air frais vers le bas. Aucun produit chimique, juste de la physique.</p>
+        <div>
+          <h3 data-i18n="e3_titre">En vol : refroidissement</h3>
+          <p data-i18n="e3_texte">Il aspire l'air chaud par le haut, le fait passer dans son corps froid, et envoie de l'air frais (18 à 22°C) vers le bas.</p>
         </div>
       </div>
-
       <div class="etape">
         <div class="numero">4</div>
-        <div class="etape-texte">
+        <div>
           <h3 data-i18n="e4_titre">Retour à la base</h3>
-          <p data-i18n="e4_texte">Quand tout le froid du MCP est utilisé, le drone retourne automatiquement à sa station sur les toits pour se recharger pendant la nuit suivante.</p>
+          <p data-i18n="e4_texte">Quand le MCP est complètement fondu, le drone rentre automatiquement à sa station pour être rechargé.</p>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- Section 4 : Avantages -->
+  <!-- Avantages -->
   <section id="avantages">
-    <h2 data-i18n="av_titre">Ses avantages</h2>
-    <div class="liste-avantages">
+    <h2 data-i18n="av_titre">Avantages</h2>
 
-      <div class="avantage">
-        <span>💧</span>
-        <div>
-          <strong data-i18n="av1_titre">Économie d'eau</strong>
-          <p data-i18n="av1_texte">Pas de brumisation, donc aucune goutte d'eau gaspillée. Le refroidissement est uniquement physique.</p>
-        </div>
+    <div class="colonnes">
+      <div class="carte">
+        <h3 data-i18n="av1_titre">Pas d'eau gaspillée</h3>
+        <p data-i18n="av1_texte">Contrairement aux brumisateurs, FrostDrone n'utilise aucune eau. Le refroidissement est purement mécanique.</p>
       </div>
-
-      <div class="avantage">
-        <span>🌱</span>
-        <div>
-          <strong data-i18n="av2_titre">Zéro pollution</strong>
-          <p data-i18n="av2_texte">Contrairement aux clims, FrostDrone n'utilise pas de fluides chimiques et ne rejette aucune chaleur dans la rue.</p>
-        </div>
+      <div class="carte">
+        <h3 data-i18n="av2_titre">Pas de pollution</h3>
+        <p data-i18n="av2_texte">Il ne rejette pas de chaleur dans la rue et n'utilise pas de produits chimiques. C'est l'inverse d'un climatiseur classique.</p>
       </div>
-
-      <div class="avantage">
-        <span>🤖</span>
-        <div>
-          <strong data-i18n="av3_titre">Intelligent</strong>
-          <p data-i18n="av3_texte">Ses capteurs thermiques repèrent les personnes vulnérables (personnes âgées, enfants) et priorisent les zones les plus dangereuses.</p>
-        </div>
+      <div class="carte">
+        <h3 data-i18n="av3_titre">Énergie solaire</h3>
+        <p data-i18n="av3_texte">Les stations de recharge sur les toits fonctionnent entièrement avec des panneaux solaires.</p>
       </div>
-
-      <div class="avantage">
-        <span>☀️</span>
-        <div>
-          <strong data-i18n="av4_titre">Énergie solaire</strong>
-          <p data-i18n="av4_texte">Les stations de recharge sur les toits fonctionnent uniquement avec des panneaux solaires. Aucune énergie fossile utilisée.</p>
-        </div>
+      <div class="carte">
+        <h3 data-i18n="av4_titre">Mobile</h3>
+        <p data-i18n="av4_texte">Il peut se déplacer partout où la chaleur est dangereuse. Pas besoin d'installer une infrastructure fixe.</p>
       </div>
-
-      <div class="avantage">
-        <span>📍</span>
-        <div>
-          <strong data-i18n="av5_titre">Mobile</strong>
-          <p data-i18n="av5_texte">Il peut intervenir partout : parcs, chantiers, marchés en plein air, arrêts de bus, là où les gens en ont vraiment besoin.</p>
-        </div>
-      </div>
-
-      <div class="avantage">
-        <span>🔇</span>
-        <div>
-          <strong data-i18n="av6_titre">Silencieux</strong>
-          <p data-i18n="av6_texte">Ses rotors sont conçus pour être discrets. FrostDrone peut voler en ville sans déranger les habitants.</p>
-        </div>
-      </div>
-
     </div>
   </section>
 
-  <!-- Section 5 : Durabilité -->
-  <section id="durabilite" class="fond-bleu">
-    <h2 data-i18n="dur_titre">Est-ce une solution durable pour le futur ?</h2>
-    <div class="durabilite-contenu">
+  <!-- Durabilité -->
+  <section id="durabilite">
+    <h2 data-i18n="dur_titre">Est-ce une solution durable ?</h2>
 
-      <div class="dur-texte">
-        <p data-i18n="dur_p1">Oui. FrostDrone ne fait pas que rafraîchir les gens : il absorbe la chaleur urbaine dans son corps et ne la relâche que sur les toits, loin des passants. C'est exactement l'inverse d'un climatiseur classique.</p>
-        <p data-i18n="dur_p2">Il fonctionne à l'énergie solaire, ne consomme pas d'eau, et n'utilise aucun produit chimique. Le matériau MCP est réutilisable indéfiniment.</p>
-        <p data-i18n="dur_p3">Comparé à un brumisateur (qui gaspille l'eau) ou un simple ventilateur (qui brasse de l'air déjà chaud), FrostDrone est la seule solution qui retire vraiment de la chaleur de l'air extérieur de manière mobile.</p>
-        <p class="verdict" data-i18n="verdict">✅ FrostDrone : une climatisation urbaine propre, mobile et intelligente.</p>
+    <p data-i18n="dur_p1">Oui. FrostDrone absorbe la chaleur de la ville dans son corps et ne la relâche que sur les toits, loin des passants. C'est l'inverse d'un climatiseur qui aggrave la chaleur extérieure.</p>
+    <p data-i18n="dur_p2">Il fonctionne à l'énergie solaire, ne consomme pas d'eau et n'utilise aucun produit chimique. Le matériau MCP peut être recongelé et réutilisé indéfiniment.</p>
+    <p data-i18n="dur_p3">Comparé à un ventilateur qui brasse de l'air chaud ou à un brumisateur qui gaspille l'eau, FrostDrone est la seule solution qui retire vraiment de la chaleur de l'air en extérieur.</p>
+
+    <div class="stats">
+      <div class="stat">
+        <p class="chiffre">0 L</p>
+        <p data-i18n="s1">d'eau consommée</p>
       </div>
-
-      <div class="dur-stats">
-        <div class="stat">
-          <div class="stat-chiffre">0 L</div>
-          <div class="stat-label" data-i18n="s1">d'eau consommée</div>
-        </div>
-        <div class="stat">
-          <div class="stat-chiffre">0 kg</div>
-          <div class="stat-label" data-i18n="s2">de CO₂ émis</div>
-        </div>
-        <div class="stat">
-          <div class="stat-chiffre">18–22°C</div>
-          <div class="stat-label" data-i18n="s3">air soufflé en dessous</div>
-        </div>
-        <div class="stat">
-          <div class="stat-chiffre">100%</div>
-          <div class="stat-label" data-i18n="s4">énergie solaire</div>
-        </div>
+      <div class="stat">
+        <p class="chiffre">0 kg</p>
+        <p data-i18n="s2">de CO2 émis</p>
       </div>
-
+      <div class="stat">
+        <p class="chiffre">18–22°C</p>
+        <p data-i18n="s3">air soufflé en dessous</p>
+      </div>
+      <div class="stat">
+        <p class="chiffre">100%</p>
+        <p data-i18n="s4">énergie solaire</p>
+      </div>
     </div>
   </section>
 
-  <!-- Pied de page -->
   <footer>
-    <p class="footer-logo">Frost<span>Drone</span></p>
-    <p data-i18n="footer">© 2026 FrostDrone — Concept imaginaire. Projet ETLV STI2D.</p>
+    <p data-i18n="footer">© 2026 FrostDrone — Projet ETLV STI2D</p>
   </footer>
 
   <script src="script.js"></script>

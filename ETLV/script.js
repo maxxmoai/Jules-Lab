@@ -1,4 +1,130 @@
-// ================================
+// FrostDrone - script.js
+// Traduction francais / anglais
+
+var traductions = {
+
+  fr: {
+    slogan:    "Le drone qui rafraîchit la ville.",
+    btn:       "En savoir plus",
+
+    pres_titre: "Présentation",
+    c1_titre:  "Le problème",
+    c1_texte:  "En été, les villes accumulent beaucoup de chaleur. Le bitume et le béton chauffent toute la journée. Les climatiseurs rejettent encore plus de chaleur dans la rue, ce qui aggrave le problème.",
+    c2_titre:  "Le drone",
+    c2_texte:  "FrostDrone est un drone en forme de stalactite. Son corps contient un matériau à changement de phase (MCP) qui stocke le froid la nuit et le libère pendant la journée.",
+    c3_titre:  "Sa mission",
+    c3_texte:  "Il vole au-dessus des endroits chauds : arrêts de bus, parcs, terrasses d'école. Il souffle de l'air frais vers le bas pour rafraîchir les personnes en dessous.",
+
+    fonc_titre: "Comment ça marche ?",
+    e1_titre:  "La nuit : recharge",
+    e1_texte:  "Le drone retourne sur le toit d'un bâtiment où une station solaire regèle son matériau MCP pendant la nuit.",
+    e2_titre:  "Le matin : décollage",
+    e2_texte:  "Il décolle et repère grâce à ses capteurs les zones les plus chaudes ou les groupes de personnes exposées à la chaleur.",
+    e3_titre:  "En vol : refroidissement",
+    e3_texte:  "Il aspire l'air chaud par le haut, le fait passer dans son corps froid, et envoie de l'air frais (18 à 22°C) vers le bas.",
+    e4_titre:  "Retour à la base",
+    e4_texte:  "Quand le MCP est complètement fondu, le drone rentre automatiquement à sa station pour être rechargé.",
+
+    av_titre:  "Avantages",
+    av1_titre: "Pas d'eau gaspillée",
+    av1_texte: "Contrairement aux brumisateurs, FrostDrone n'utilise aucune eau. Le refroidissement est purement mécanique.",
+    av2_titre: "Pas de pollution",
+    av2_texte: "Il ne rejette pas de chaleur dans la rue et n'utilise pas de produits chimiques. C'est l'inverse d'un climatiseur classique.",
+    av3_titre: "Énergie solaire",
+    av3_texte: "Les stations de recharge sur les toits fonctionnent entièrement avec des panneaux solaires.",
+    av4_titre: "Mobile",
+    av4_texte: "Il peut se déplacer partout où la chaleur est dangereuse. Pas besoin d'installer une infrastructure fixe.",
+
+    dur_titre: "Est-ce une solution durable ?",
+    dur_p1:   "Oui. FrostDrone absorbe la chaleur de la ville dans son corps et ne la relâche que sur les toits, loin des passants. C'est l'inverse d'un climatiseur qui aggrave la chaleur extérieure.",
+    dur_p2:   "Il fonctionne à l'énergie solaire, ne consomme pas d'eau et n'utilise aucun produit chimique. Le matériau MCP peut être recongelé et réutilisé indéfiniment.",
+    dur_p3:   "Comparé à un ventilateur qui brasse de l'air chaud ou à un brumisateur qui gaspille l'eau, FrostDrone est la seule solution qui retire vraiment de la chaleur de l'air en extérieur.",
+    s1:       "d'eau consommée",
+    s2:       "de CO2 émis",
+    s3:       "air soufflé en dessous",
+    s4:       "énergie solaire",
+
+    footer: "© 2026 FrostDrone — Projet ETLV STI2D"
+  },
+
+  en: {
+    slogan:    "The drone that cools down the city.",
+    btn:       "Learn more",
+
+    pres_titre: "Presentation",
+    c1_titre:  "The problem",
+    c1_texte:  "In summer, cities store a lot of heat. Asphalt and concrete heat up all day. Air conditioners make things worse by blowing even more heat into the street.",
+    c2_titre:  "The drone",
+    c2_texte:  "FrostDrone has a stalactite shape. Its body contains a phase-change material (PCM) that stores coldness at night and releases it during the day.",
+    c3_titre:  "Its mission",
+    c3_texte:  "It flies above hot spots: bus stops, parks, school playgrounds. It blows cool air downward to refresh the people below.",
+
+    fonc_titre: "How does it work?",
+    e1_titre:  "At night: recharging",
+    e1_texte:  "The drone goes back to a rooftop station where a solar unit refreezes its PCM material overnight.",
+    e2_titre:  "In the morning: takeoff",
+    e2_texte:  "It takes off and uses its sensors to find the hottest areas or groups of people exposed to heat.",
+    e3_titre:  "In flight: cooling",
+    e3_texte:  "It sucks in hot air from the top, passes it through its cold body, and blows cool air (18 to 22°C) downward.",
+    e4_titre:  "Return to base",
+    e4_texte:  "When the PCM is fully melted, the drone automatically returns to its station to be recharged.",
+
+    av_titre:  "Advantages",
+    av1_titre: "No water wasted",
+    av1_texte: "Unlike misting systems, FrostDrone uses no water at all. The cooling is purely mechanical.",
+    av2_titre: "No pollution",
+    av2_texte: "It does not blow heat into the street and uses no chemicals. It is the opposite of a classic air conditioner.",
+    av3_titre: "Solar energy",
+    av3_texte: "The rooftop recharging stations run entirely on solar panels.",
+    av4_titre: "Mobile",
+    av4_texte: "It can go anywhere heat is dangerous. No need to build fixed infrastructure.",
+
+    dur_titre: "Is it a sustainable solution?",
+    dur_p1:   "Yes. FrostDrone absorbs the city's heat into its body and only releases it on rooftops, away from people. This is the opposite of an air conditioner that makes outdoor heat worse.",
+    dur_p2:   "It runs on solar energy, uses no water and no chemicals. The PCM material can be refrozen and reused endlessly.",
+    dur_p3:   "Compared to a fan that just moves hot air or a misting system that wastes water, FrostDrone is the only solution that actually removes heat from outdoor air.",
+    s1:       "of water used",
+    s2:       "of CO2 emitted",
+    s3:       "air blown below",
+    s4:       "solar energy",
+
+    footer: "© 2026 FrostDrone — ETLV STI2D project"
+  }
+
+};
+
+// Langue de départ
+var langue = "fr";
+
+// Cette fonction change tous les textes de la page
+function changerLangue(l) {
+  var t = traductions[l];
+  var elements = document.querySelectorAll("[data-i18n]");
+
+  for (var i = 0; i < elements.length; i++) {
+    var cle = elements[i].getAttribute("data-i18n");
+    if (t[cle] != undefined) {
+      elements[i].textContent = t[cle];
+    }
+  }
+
+  // On change le texte du bouton
+  if (l === "fr") {
+    document.getElementById("langBtn").textContent = "EN";
+  } else {
+    document.getElementById("langBtn").textContent = "FR";
+  }
+}
+
+// Quand on clique sur le bouton
+document.getElementById("langBtn").addEventListener("click", function() {
+  if (langue === "fr") {
+    langue = "en";
+  } else {
+    langue = "fr";
+  }
+  changerLangue(langue);
+});// ================================
 // FrostDrone - script.js
 // Traduction FR / EN du site
 // ================================

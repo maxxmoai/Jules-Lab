@@ -109,7 +109,7 @@ var traductions = {
 };
 
 // ---- La langue actuelle (on commence en français) ----
-var langueActuelle = "fr";
+var langueActuelle = "en";
 
 // ---- Fonction qui met à jour tous les textes ----
 function changerLangue(langue) {

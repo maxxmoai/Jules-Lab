@@ -1,21 +1,16 @@
-/* ================================
-   FrostDrone - style.css
-   Style simple, propre et moderne
-   ================================ */
+/* FrostDrone - style.css */
 
-/* ---- Variables de couleurs ---- */
+/* Couleurs du site */
 :root {
-  --bleu-fonce: #0d1b2a;
-  --bleu-moyen: #1e3a5f;
-  --bleu-clair: #4a9ece;
-  --cyan: #56cfe1;
-  --blanc: #ffffff;
-  --gris-texte: #5a6a7a;
-  --gris-fond: #f4f8fb;
-  --rayon: 12px;
+  --bleu: #1a3a5c;
+  --bleu-clair: #2e7fb8;
+  --fond: #ffffff;
+  --gris: #f5f5f5;
+  --texte: #222222;
+  --texte-discret: #555555;
 }
 
-/* ---- Reset de base ---- */
+/* Reset simple */
 * {
   margin: 0;
   padding: 0;
@@ -23,222 +18,160 @@
 }
 
 body {
-  font-family: 'Nunito', sans-serif;
-  color: var(--bleu-fonce);
-  background-color: var(--blanc);
+  font-family: Georgia, serif;
+  background-color: var(--fond);
+  color: var(--texte);
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-/* ---- Navigation ---- */
+/* Navigation */
 nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 65px;
-  background-color: var(--bleu-fonce);
+  background-color: var(--bleu);
+  padding: 15px 40px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 40px;
-  z-index: 100;
+  align-items: center;
+  position: sticky;
+  top: 0;
 }
 
-.nav-logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--blanc);
-  letter-spacing: 1px;
-}
-
-.nav-logo span {
-  color: var(--cyan);
+.logo {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 
 #langBtn {
-  background: transparent;
-  border: 2px solid var(--cyan);
-  color: var(--cyan);
-  padding: 6px 18px;
-  border-radius: 20px;
-  font-family: 'Nunito', sans-serif;
+  background-color: white;
+  color: var(--bleu);
+  border: none;
+  padding: 6px 16px;
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: bold;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 #langBtn:hover {
-  background-color: var(--cyan);
-  color: var(--bleu-fonce);
+  background-color: var(--bleu-clair);
+  color: white;
 }
 
-/* ---- Section Hero (Accueil) ---- */
+/* Section Accueil */
 #accueil {
-  min-height: 100vh;
-  padding-top: 65px;
-  background-color: var(--bleu-fonce);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 80px;
-  padding-right: 60px;
-  gap: 30px;
-}
-
-.hero-texte {
-  max-width: 500px;
-  color: var(--blanc);
-}
-
-.petit-titre {
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  color: var(--cyan);
-  margin-bottom: 14px;
+  padding: 60px 80px;
+  background-color: var(--bleu);
+  color: white;
+  gap: 40px;
 }
 
 .hero-texte h1 {
-  font-size: 5rem;
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: 20px;
+  font-size: 3.5rem;
+  margin-bottom: 16px;
 }
 
 .slogan {
-  font-size: 1.15rem;
-  color: #a8c8e0;
-  font-style: italic;
-  margin-bottom: 36px;
+  font-size: 1.1rem;
+  margin-bottom: 28px;
+  color: #b0cce0;
 }
 
 .bouton {
   display: inline-block;
-  background-color: var(--cyan);
-  color: var(--bleu-fonce);
-  font-weight: 800;
-  font-size: 0.95rem;
-  padding: 12px 32px;
-  border-radius: 8px;
+  background-color: white;
+  color: var(--bleu);
+  padding: 10px 26px;
   text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
 }
 
 .bouton:hover {
   background-color: var(--bleu-clair);
-  color: var(--blanc);
-}
-
-.hero-image {
-  flex-shrink: 0;
+  color: white;
 }
 
 .hero-image img {
-  width: 380px;
-  max-width: 100%;
-  border-radius: 20px;
-  filter: drop-shadow(0 0 30px rgba(86, 207, 225, 0.3));
+  width: 320px;
+  border-radius: 12px;
 }
 
-/* ---- Sections en général ---- */
+/* Sections */
 section {
-  padding: 80px 40px;
-  max-width: 1100px;
-  margin: 0 auto;
+  padding: 60px 80px;
+}
+
+section:nth-child(even) {
+  background-color: var(--gris);
 }
 
 section h2 {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--bleu-fonce);
-  margin-bottom: 50px;
-  text-align: center;
+  font-size: 1.8rem;
+  color: var(--bleu);
+  margin-bottom: 36px;
+  border-bottom: 2px solid var(--bleu-clair);
+  padding-bottom: 10px;
 }
 
-/* ---- Section Présentation : 3 cartes ---- */
-.trois-colonnes {
+section p {
+  color: var(--texte-discret);
+  margin-bottom: 16px;
+  max-width: 800px;
+}
+
+/* Colonnes (cartes) */
+.colonnes {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .carte {
-  background-color: var(--gris-fond);
-  border-radius: var(--rayon);
-  padding: 30px 24px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
   flex: 1;
-  min-width: 240px;
-  max-width: 320px;
-  border: 2px solid transparent;
-}
-
-.carte:hover {
-  border-color: var(--cyan);
-}
-
-.icone {
-  font-size: 2rem;
-  margin-bottom: 14px;
+  min-width: 220px;
 }
 
 .carte h3 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--bleu-fonce);
+  color: var(--bleu);
   margin-bottom: 10px;
+  font-size: 1.05rem;
 }
 
 .carte p {
   font-size: 0.92rem;
-  color: var(--gris-texte);
-  line-height: 1.65;
+  color: var(--texte-discret);
+  margin: 0;
 }
 
-/* ---- Section Fonctionnement (fond clair) ---- */
-.fond-clair {
-  background-color: var(--gris-fond);
-  max-width: 100%;
-  padding: 80px 0;
-}
-
-.fond-clair > * {
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 40px;
-  padding-right: 40px;
-}
-
-.fond-clair h2 {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--bleu-fonce);
-  margin-bottom: 50px;
-}
-
+/* Etapes */
 .etapes {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  max-width: 750px;
-  margin: 0 auto;
-  padding: 0 40px;
+  gap: 24px;
+  max-width: 700px;
 }
 
 .etape {
   display: flex;
-  align-items: flex-start;
   gap: 20px;
+  align-items: flex-start;
 }
 
 .numero {
-  background-color: var(--cyan);
-  color: var(--bleu-fonce);
-  font-size: 1.3rem;
-  font-weight: 800;
-  width: 46px;
-  height: 46px;
+  background-color: var(--bleu);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -246,189 +179,73 @@ section h2 {
   flex-shrink: 0;
 }
 
-.etape-texte h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--bleu-fonce);
+.etape h3 {
+  color: var(--bleu);
   margin-bottom: 6px;
+  font-size: 1rem;
 }
 
-.etape-texte p {
+.etape p {
   font-size: 0.92rem;
-  color: var(--gris-texte);
-  line-height: 1.65;
+  color: var(--texte-discret);
+  margin: 0;
 }
 
-/* ---- Section Avantages ---- */
-.liste-avantages {
+/* Stats */
+.stats {
   display: flex;
-  flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
-}
-
-.avantage {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  background-color: var(--gris-fond);
-  border-radius: var(--rayon);
-  padding: 20px 18px;
-  width: 320px;
-  border: 2px solid transparent;
-}
-
-.avantage:hover {
-  border-color: var(--cyan);
-}
-
-.avantage > span {
-  font-size: 1.7rem;
-  flex-shrink: 0;
-}
-
-.avantage strong {
-  display: block;
-  font-weight: 700;
-  color: var(--bleu-fonce);
-  margin-bottom: 5px;
-  font-size: 0.97rem;
-}
-
-.avantage p {
-  font-size: 0.88rem;
-  color: var(--gris-texte);
-  line-height: 1.55;
-}
-
-/* ---- Section Durabilité (fond bleu) ---- */
-.fond-bleu {
-  background-color: var(--bleu-moyen);
-  max-width: 100%;
-  padding: 80px 0;
-}
-
-.fond-bleu h2 {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--blanc);
-  margin-bottom: 50px;
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 40px;
-}
-
-.durabilite-contenu {
-  display: flex;
-  gap: 50px;
-  align-items: flex-start;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 40px;
   flex-wrap: wrap;
-}
-
-.dur-texte {
-  flex: 1;
-  min-width: 280px;
-}
-
-.dur-texte p {
-  color: #c5dff0;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  margin-bottom: 16px;
-}
-
-.dur-texte strong {
-  color: var(--blanc);
-}
-
-.verdict {
-  color: var(--cyan) !important;
-  font-weight: 700;
-  font-size: 1rem !important;
-}
-
-.dur-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  flex-shrink: 0;
+  margin-top: 36px;
 }
 
 .stat {
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(86, 207, 225, 0.3);
-  border-radius: var(--rayon);
-  padding: 20px 16px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px 24px;
   text-align: center;
+  min-width: 150px;
 }
 
-.stat-chiffre {
+.chiffre {
   font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--cyan);
-  margin-bottom: 4px;
+  font-weight: bold;
+  color: var(--bleu-clair);
+  margin-bottom: 6px;
 }
 
-.stat-label {
-  font-size: 0.8rem;
-  color: #a8c8e0;
+.stat p {
+  font-size: 0.85rem;
+  color: var(--texte-discret);
+  margin: 0;
 }
 
-/* ---- Footer ---- */
+/* Footer */
 footer {
-  background-color: var(--bleu-fonce);
+  background-color: var(--bleu);
+  color: #aaa;
   text-align: center;
-  padding: 36px 20px;
-  color: #7a9ab8;
+  padding: 24px;
   font-size: 0.85rem;
 }
 
-.footer-logo {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: var(--blanc);
-  margin-bottom: 8px;
-}
-
-.footer-logo span {
-  color: var(--cyan);
-}
-
-/* ---- Responsive mobile ---- */
-@media (max-width: 768px) {
-
+/* Mobile */
+@media (max-width: 700px) {
   #accueil {
     flex-direction: column;
-    padding: 100px 24px 60px;
-    text-align: center;
-  }
-
-  .hero-texte h1 {
-    font-size: 3.5rem;
+    padding: 40px 24px;
   }
 
   .hero-image img {
-    width: 260px;
-  }
-
-  nav {
-    padding: 0 20px;
+    width: 100%;
   }
 
   section {
-    padding: 60px 20px;
+    padding: 40px 24px;
   }
 
-  .durabilite-contenu {
-    flex-direction: column;
-  }
-
-  .dur-stats {
-    width: 100%;
+  nav {
+    padding: 14px 20px;
   }
 }

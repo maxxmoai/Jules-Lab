@@ -94,7 +94,7 @@ var traductions = {
 };
 
 // Langue de départ
-var langue = "fr";
+var langue = "en";
 
 // Cette fonction change tous les textes de la page
 function changerLangue(l) {

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entraînement 2026 — Jules</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Mobile toggle -->
+<button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Menu">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+
+  <!-- ─── SIDEBAR ─── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="eyebrow">Saison 2026</div>
+      <div class="title">Training<br><span class="accent">Jules</span></div>
+    </div>
+
+    <div class="nav-section-label">Suivi</div>
+    <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+      <span class="nav-icon">◈</span> Tableau de bord
+    </div>
+    <div class="nav-item" data-page="journal" onclick="showPage('journal')">
+      <span class="nav-icon">≡</span> Journal
+    </div>
+    <div class="nav-item" data-page="ajouter" onclick="showPage('ajouter')">
+      <span class="nav-icon">+</span> Ajouter séance
+    </div>
+
+    <div class="nav-section-label" style="margin-top:8px;">Programme</div>
+    <div class="nav-item" data-page="plan" onclick="showPage('plan')">
+      <span class="nav-icon">▤</span> Plan détaillé
+    </div>
+    <div class="nav-item" data-page="techniques" onclick="showPage('techniques')">
+      <span class="nav-icon">◉</span> Techniques & Circuits
+    </div>
+    <div class="nav-item" data-page="fatigue" onclick="showPage('fatigue')">
+      <span class="nav-icon">⚡</span> Gestion fatigue
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="phase-indicator">Phase actuelle</div>
+      <div class="phase-badge" id="phase-badge">Transition</div>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main">
+
+    <!-- ══ DASHBOARD ══ -->
+    <section id="page-dashboard" class="page active">
+      <div class="page-header">
+        <div class="eyebrow">Vue d'ensemble</div>
+        <h1>Tableau de bord</h1>
+      </div>
+
+      <div id="dash-alert"></div>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Volume semaine</div>
+          <div class="metric-val green" id="m-vol">—</div>
+          <div class="metric-sub">heures d'entraînement</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Charge (UA)</div>
+          <div class="metric-val amber" id="m-charge">—</div>
+          <div class="metric-sub">durée × RPE</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">RPE moyen</div>
+          <div class="metric-val" id="m-rpe" style="color:var(--c-text)">—</div>
+          <div class="metric-sub">effort ressenti / 10</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Séances ce mois</div>
+          <div class="metric-val blue" id="m-month">—</div>
+          <div class="metric-sub">total</div>
+        </div>
+      </div>
+
+      <!-- Week calendar -->
+      <div class="card">
+        <div class="card-title">Semaine</div>
+        <div class="week-nav">
+          <button class="chevron" onclick="weekOffset--;renderDashboard()">&#8249;</button>
+          <span class="week-label" id="week-label"></span>
+          <button class="chevron" onclick="weekOffset++;renderDashboard()">&#8250;</button>
+        </div>
+        <div class="week-grid-labels">
+          <span>LUN</span><span>MAR</span><span>MER</span><span>JEU</span><span>VEN</span><span>SAM</span><span>DIM</span>
+        </div>
+        <div class="week-grid" id="week-grid"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="card">
+          <div class="card-title">Volume par sport — 4 semaines</div>
+          <div class="chart-wrap" style="height:180px;"><canvas id="chart-sport"></canvas></div>
+          <div id="sport-legend" style="display:flex;flex-direction:column;gap:5px;margin-top:10px;"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Charge hebdomadaire — 8 semaines</div>
+          <div class="chart-wrap" style="height:180px;"><canvas id="chart-charge"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ JOURNAL ══ -->
+    <section id="page-journal" class="page">
+      <div class="page-header">
+        <div class="eyebrow">Historique</div>
+        <h1>Journal</h1>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <span style="font-size:13px;color:var(--c-text2);">Toutes les séances enregistrées</span>
+        <select id="filter-sport" onchange="renderJournal()" style="width:auto;padding:7px 10px;">
+          <option value="">Tous les sports</option>
+          <option>Ski de fond</option>
+          <option>Running / Trail</option>
+          <option>Vélo de route</option>
+          <option>Ski-roue</option>
+          <option>Muscu / Gainage</option>
+          <option>Natation</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div id="journal-list"></div>
+    </section>
+
+    <!-- ══ AJOUTER ══ -->
+    <section id="page-ajouter" class="page">
+      <div class="page-header">
+        <div class="eyebrow">Enregistrement</div>
+        <h1>Ajouter une séance</h1>
+      </div>
+
+      <div class="card">
+        <div class="form-grid three">
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="f-date">
+          </div>
+          <div class="form-group">
+            <label>Sport</label>
+            <select id="f-sport"></select>
+          </div>
+          <div class="form-group">
+            <label>Durée (min)</label>
+            <input type="number" id="f-duree" min="1" max="600" placeholder="60">
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Distance (km) — optionnel</label>
+            <input type="number" id="f-distance" step="0.1" placeholder="—">
+          </div>
+          <div class="form-group">
+            <label>Type de séance</label>
+            <select id="f-type">
+              <option>Z1 — Récupération active</option>
+              <option>Z2 — Endurance fondamentale</option>
+              <option>Z3 — Tempo / Seuil</option>
+              <option>Z4 — Intervalles / VMA</option>
+              <option>Z5 — Sprint / Vitesse max</option>
+              <option>Muscu / Renfo</option>
+              <option>Beach Body</option>
+              <option>Compétition</option>
+              <option>Technique</option>
+              <option>Sortie longue</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+          <label>RPE — Effort ressenti (1 = rien, 10 = max)</label>
+          <div class="rpe-grid" id="rpe-bar" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Fatigue au réveil (1-10)</label>
+            <input type="number" id="f-fatigue" min="1" max="10" placeholder="5">
+          </div>
+          <div class="form-group">
+            <label>Douleur cheville (0 = rien, 5 = fort)</label>
+            <input type="number" id="f-cheville" min="0" max="5" placeholder="0">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:18px;">
+          <label>Notes libres</label>
+          <textarea id="f-notes" placeholder="Ressenti, conditions météo, points à améliorer, objectifs atteints…"></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn btn-primary" onclick="saveSession()">Enregistrer la séance</button>
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div class="card" style="background:var(--c-green-dim);border-color:rgba(90,223,138,.2);">
+        <div class="card-title" style="color:var(--c-green);">Rappel protocole cheville</div>
+        <p style="font-size:13px;color:var(--c-text2);line-height:1.7;">
+          À faire <strong style="color:var(--c-text)">TOUS LES SOIRS — 3 minutes</strong> :<br>
+          20 rotations / pied · 30sec équilibre unipodal / pied · 10 relevés de pointe unilatéraux · Étirement mollet 30sec<br>
+          <span style="color:var(--c-green);">→ Note la douleur cheville ci-dessus pour suivre l'évolution.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ══ PLAN ══ -->
+    <section id="page-plan" class="page">
+      <div class="page-header">
+        <div class="eyebrow">Programme annuel</div>
+        <h1>Plan détaillé</h1>
+        <p>Clique sur une semaine pour voir le détail des séances. Créneaux scolaires (mar soir + ven matin + mer/sam club) vs vacances (libre toute la semaine).</p>
+      </div>
+      <div id="plan-content"></div>
+    </section>
+
+    <!-- ══ TECHNIQUES ══ -->
+    <section id="page-techniques" class="page">
+      <div class="page-header">
+        <div class="eyebrow">Référence</div>
+        <h1>Techniques & Circuits</h1>
+        <p>Tous les circuits muscu, conseils de pratique vélo et trail, et le protocole cheville. Ta référence permanente.</p>
+      </div>
+      <div id="tech-content"></div>
+    </section>
+
+    <!-- ══ FATIGUE ══ -->
+    <section id="page-fatigue" class="page">
+      <div class="page-header">
+        <div class="eyebrow">Gestion de la charge</div>
+        <h1>Fatigue & Ajustements</h1>
+        <p>Comment lire ta charge d'entraînement et quand adapter le plan.</p>
+      </div>
+
+      <!-- Formula -->
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">Formule charge hebdomadaire (UA)</div>
+        <div style="background:var(--c-surface);border-radius:var(--radius);padding:14px 16px;font-family:var(--font-mono);font-size:14px;color:var(--c-green);margin-bottom:10px;">
+          Charge = Σ (Durée en min × RPE séance)
+        </div>
+        <p style="font-size:13px;color:var(--c-text2);line-height:1.7;">
+          <strong style="color:var(--c-text)">Exemple :</strong> 60min RPE 7 + 30min RPE 4 + 25min RPE 5 = 420 + 120 + 125 = <strong style="color:var(--c-amber)">665 UA</strong><br>
+          <strong style="color:var(--c-text)">Zone normale U18 (été) :</strong> 500 – 900 UA / semaine<br>
+          <strong style="color:var(--c-red)">Zone rouge :</strong> &gt; 1100 UA / semaine sur 2 semaines consécutives
+        </p>
+      </div>
+
+      <!-- Rules table -->
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-title">Règles d'ajustement selon RPE moyen hebdo</div>
+        <div style="overflow-x:auto;">
+          <table class="ftable">
+            <thead>
+              <tr>
+                <th>RPE moyen</th>
+                <th>État</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="fatigue-rules"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- History table -->
+      <div class="card">
+        <div class="card-title">Historique charge — 8 dernières semaines</div>
+        <div style="overflow-x:auto;">
+          <table class="ftable">
+            <thead>
+              <tr>
+                <th>Semaine du</th>
+                <th>Séances</th>
+                <th>RPE moy.</th>
+                <th>Charge (UA)</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody id="history-rows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cheville tracker -->
+      <div class="card" style="background:var(--c-blue-dim);border-color:rgba(77,184,255,.2);margin-top:14px;">
+        <div class="card-title" style="color:var(--c-blue);">Protocole cheville — règle des 6 semaines</div>
+        <p style="font-size:13px;color:var(--c-text2);line-height:1.7;">
+          Le protocole cheville (voir Techniques) doit être fait <strong style="color:var(--c-text)">tous les soirs sans exception</strong> pendant les 6 premières semaines de la reprise (jusqu'au ~1er juin).<br>
+          Après 6 semaines, tu peux passer à 3×/semaine en maintenance. La note cheville dans chaque séance te permet de suivre la progression dans l'historique.
+        </p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0A0A0F">
+<title>SmartBinding</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg:       #0A0A0F;
+    --surface:  #12121A;
+    --card:     #1A1A28;
+    --cyan:     #00C8FF;
+    --cyan-dim: #004A5E;
+    --gold:     #FFD700;
+    --red:      #FF3355;
+    --green:    #00FF88;
+    --text:     #E8E8F0;
+    --muted:    #555570;
+    --border:   #252535;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  html, body {
+    height:100%; overflow:hidden;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Rajdhani', sans-serif;
+    font-size:16px;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    display:flex; flex-direction:column;
+    height:100dvh; /* dynamic viewport height */
+    max-width:430px; margin:0 auto;
+    position:relative;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px 10px;
+    border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .logo {
+    font-size:20px; font-weight:700; letter-spacing:2px;
+    color:var(--cyan); text-transform:uppercase;
+  }
+  .logo span { color:var(--text); }
+  #ble-dot {
+    display:flex; align-items:center; gap:6px;
+    font-size:12px; font-weight:600; letter-spacing:1px;
+    color:var(--muted); transition:color .3s;
+  }
+  #ble-dot::before {
+    content:''; width:8px; height:8px; border-radius:50%;
+    background:var(--muted); transition:background .3s, box-shadow .3s;
+  }
+  #ble-dot.connected { color:var(--green); }
+  #ble-dot.connected::before { background:var(--green); box-shadow:0 0 8px var(--green); }
+  #ble-dot.scanning { color:var(--cyan); animation:blink 1s infinite; }
+  #ble-dot.scanning::before { background:var(--cyan); }
+  #ble-dot.demo { color:var(--gold); }
+  #ble-dot.demo::before { background:var(--gold); box-shadow:0 0 8px var(--gold); }
+  @keyframes blink { 50%{ opacity:.3 } }
+
+  /* ── TABS ── */
+  nav {
+    display:flex; border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  nav button {
+    flex:1; padding:10px 0; background:none; border:none;
+    color:var(--muted); font-family:'Rajdhani',sans-serif;
+    font-size:13px; font-weight:600; letter-spacing:1px;
+    text-transform:uppercase; cursor:pointer;
+    border-bottom:2px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  nav button.active { color:var(--cyan); border-color:var(--cyan); }
+
+  /* ── CONTENT ── */
+  #content { flex:1; overflow-y:auto; padding:16px; }
+
+  /* ── SCREEN CARDS ── */
+  .screen { display:none; flex-direction:column; gap:14px; }
+  .screen.active { display:flex; }
+
+  .card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px;
+  }
+  .card-title {
+    font-size:11px; font-weight:600; letter-spacing:2px;
+    color:var(--muted); text-transform:uppercase; margin-bottom:12px;
+  }
+
+  /* ── FORCE DISPLAY ── */
+  .force-row {
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }
+  .force-block {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px; padding:14px;
+    text-align:center; position:relative; overflow:hidden;
+    transition:border-color .3s;
+  }
+  .force-block.alert { border-color:var(--red); }
+  .force-block::before {
+    content:''; position:absolute; bottom:0; left:0; right:0;
+    height:3px; background:var(--cyan-dim); transition:width .4s;
+  }
+  .force-label {
+    font-size:10px; font-weight:700; letter-spacing:2px;
+    color:var(--cyan); text-transform:uppercase; margin-bottom:6px;
+  }
+  .force-value {
+    font-family:'JetBrains Mono', monospace;
+    font-size:46px; font-weight:700;
+    color:var(--text); line-height:1;
+    transition:color .3s;
+  }
+  .force-block.alert .force-value { color:var(--red); }
+  .force-unit {
+    font-size:12px; color:var(--muted); margin-top:4px;
+  }
+  .force-bar {
+    position:absolute; bottom:0; left:0;
+    height:3px; background:var(--cyan);
+    transition:width .4s ease, background .3s;
+  }
+  .force-block.alert .force-bar { background:var(--red); }
+
+  /* ── BALANCE BAR ── */
+  .balance-wrap { margin-top:4px; }
+  .balance-labels {
+    display:flex; justify-content:space-between;
+    font-size:12px; color:var(--muted); margin-bottom:6px;
+  }
+  .balance-labels span { font-weight:600; }
+  .balance-track {
+    height:10px; background:var(--surface);
+    border-radius:5px; overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .balance-fill {
+    height:100%; background:linear-gradient(90deg, var(--cyan), #0066FF);
+    border-radius:5px; transition:width .4s ease;
+  }
+  .balance-pct {
+    display:flex; justify-content:space-between;
+    font-size:13px; font-weight:700; margin-top:6px;
+  }
+  #pct-g { color:var(--cyan); }
+  #pct-d { color:#0099FF; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;
+  }
+  .stat-block {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:10px; text-align:center;
+  }
+  .stat-label { font-size:9px; letter-spacing:1.5px; color:var(--muted); text-transform:uppercase; }
+  .stat-value {
+    font-family:'JetBrains Mono', monospace;
+    font-size:22px; font-weight:700; color:var(--text); margin-top:2px;
+  }
+  .stat-value.gold { color:var(--gold); }
+
+  /* ── ALERT BANNER ── */
+  #alert-banner {
+    background:var(--red); color:#fff;
+    border-radius:8px; padding:10px 14px;
+    font-size:14px; font-weight:700; letter-spacing:1px;
+    text-align:center; display:none;
+    animation:pulse-red 0.8s infinite;
+  }
+  @keyframes pulse-red { 50%{ opacity:.7 } }
+
+  /* ── BUTTONS ── */
+  .btn {
+    border:none; border-radius:8px; padding:13px 20px;
+    font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700;
+    letter-spacing:1px; cursor:pointer; transition:opacity .2s, transform .1s;
+    text-transform:uppercase;
+  }
+  .btn:active { transform:scale(.97); opacity:.85; }
+  .btn-primary { background:var(--cyan); color:#0A0A0F; width:100%; }
+  .btn-secondary { background:var(--surface); color:var(--text); border:1px solid var(--border); width:100%; }
+  .btn-demo { background:#1A1A44; color:var(--cyan); border:1px solid var(--cyan-dim); width:100%; }
+  .btn-danger { background:#330011; color:var(--red); border:1px solid var(--red); width:100%; }
+  .btn-row { display:flex; gap:10px; }
+  .btn-row .btn { flex:1; }
+
+  /* ── SETTINGS ── */
+  .setting-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 0; border-bottom:1px solid var(--border);
+  }
+  .setting-row:last-child { border-bottom:none; }
+  .setting-label { font-size:14px; color:var(--text); }
+  .setting-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+  input[type=number], input[type=text] {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:6px; padding:8px 10px;
+    color:var(--text); font-family:'JetBrains Mono',monospace; font-size:14px;
+    width:90px; text-align:right;
+  }
+  input:focus { outline:none; border-color:var(--cyan); }
+
+  /* toggle switch */
+  .toggle { position:relative; width:46px; height:26px; }
+  .toggle input { opacity:0; width:0; height:0; }
+  .toggle-slider {
+    position:absolute; inset:0; background:var(--surface);
+    border:1px solid var(--border); border-radius:13px; cursor:pointer;
+    transition:.3s;
+  }
+  .toggle-slider::before {
+    content:''; position:absolute; left:3px; top:3px;
+    width:18px; height:18px; background:var(--muted);
+    border-radius:50%; transition:.3s;
+  }
+  .toggle input:checked + .toggle-slider { background:var(--cyan-dim); border-color:var(--cyan); }
+  .toggle input:checked + .toggle-slider::before { transform:translateX(20px); background:var(--cyan); }
+
+  /* ── BLE LIST ── */
+  #ble-list { display:flex; flex-direction:column; gap:8px; margin-top:10px; }
+  .ble-item {
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:12px 14px; cursor:pointer;
+    transition:border-color .2s;
+  }
+  .ble-item:active { border-color:var(--cyan); }
+  .ble-name { font-size:14px; font-weight:600; }
+  .ble-addr { font-size:11px; color:var(--muted); font-family:'JetBrains Mono',monospace; }
+  .ble-rssi { font-size:12px; color:var(--cyan); }
+
+  /* ── SESSION SCREEN ── */
+  .session-timer {
+    font-family:'JetBrains Mono',monospace;
+    font-size:52px; font-weight:700; text-align:center;
+    color:var(--text); letter-spacing:4px;
+  }
+  .chart-area {
+    height:140px; position:relative;
+    background:var(--surface); border-radius:8px; overflow:hidden;
+    border:1px solid var(--border);
+  }
+  canvas#chart { width:100%; height:100%; display:block; }
+
+  /* ── SCROLLBAR ── */
+  #content::-webkit-scrollbar { width:4px; }
+  #content::-webkit-scrollbar-track { background:transparent; }
+  #content::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+  /* ── SCAN ANIMATION ── */
+  .scan-ring {
+    width:60px; height:60px; margin:10px auto;
+    border-radius:50%; border:2px solid var(--cyan-dim);
+    border-top-color:var(--cyan);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin { to{ transform:rotate(360deg) } }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">Smart<span>Binding</span></div>
+    <div id="ble-dot">DÉCONNECTÉ</div>
+  </header>
+
+  <!-- TABS -->
+  <nav>
+    <button class="active" onclick="showTab('dashboard')">Dashboard</button>
+    <button onclick="showTab('session')">Session</button>
+    <button onclick="showTab('ble')">BLE</button>
+    <button onclick="showTab('settings')">Réglages</button>
+  </nav>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+    <!-- ══════════ DASHBOARD ══════════ -->
+    <div id="tab-dashboard" class="screen active">
+
+      <div id="alert-banner">⚠ SEUIL DÉPASSÉ !</div>
+
+      <!-- Forces -->
+      <div class="card">
+        <div class="card-title">Forces en temps réel</div>
+        <div class="force-row">
+          <div class="force-block" id="block-g">
+            <div class="force-label">Gauche</div>
+            <div class="force-value" id="val-g">--</div>
+            <div class="force-unit" id="unit-g">kg</div>
+            <div class="force-bar" id="bar-g" style="width:0%"></div>
+          </div>
+          <div class="force-block" id="block-d">
+            <div class="force-label">Droit</div>
+            <div class="force-value" id="val-d">--</div>
+            <div class="force-unit" id="unit-d">kg</div>
+            <div class="force-bar" id="bar-d" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Balance -->
+      <div class="card">
+        <div class="card-title">Équilibre</div>
+        <div class="balance-wrap">
+          <div class="balance-labels">
+            <span>◀ Gauche</span>
+            <span>Droit ▶</span>
+          </div>
+          <div class="balance-track">
+            <div class="balance-fill" id="balance-fill" style="width:50%"></div>
+          </div>
+          <div class="balance-pct">
+            <span id="pct-g">--%</span>
+            <span id="pct-d">--%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-block">
+          <div class="stat-label">Pas</div>
+          <div class="stat-value" id="stat-pas">0</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Pic G</div>
+          <div class="stat-value gold" id="stat-peak-g">--</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-label">Pic D</div>
+          <div class="stat-value gold" id="stat-peak-d">--</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════ SESSION ══════════ -->
+    <div id="tab-session" class="screen">
+
+      <div class="card" style="text-align:center">
+        <div class="card-title">Durée session</div>
+        <div class="session-timer" id="timer">00:00</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Force au cours du temps</div>
+        <div class="chart-area">
+          <canvas id="chart"></canvas>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;">
+          <span style="color:var(--cyan)">— Gauche</span>
+          <span style="color:#FF6B00">— Droit</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="btn-start" onclick="toggleSession()">▶ Démarrer</button>
+        <button class="btn btn-secondary" onclick="resetSession()">↺ Reset</button>
+      </div>
+
+    </div>
+
+    <!-- ══════════ BLE ══════════ -->
+    <div id="tab-ble" class="screen">
+
+      <div class="card">
+        <div class="card-title">Connexion Bluetooth LE</div>
+        <button class="btn btn-primary" id="btn-scan" onclick="startScan()" style="margin-bottom:12px">
+          🔍 Scanner les appareils
+        </button>
+        <button class="btn btn-demo" onclick="toggleDemo()">
+          ▶ Mode Démonstration
+        </button>
+        <div id="scan-indicator" style="display:none;margin-top:12px">
+          <div class="scan-ring"></div>
+          <div style="text-align:center;font-size:12px;color:var(--muted)">Recherche en cours...</div>
+        </div>
+        <div id="ble-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Infos protocole</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);line-height:1.8">
+          <div>Service UUID &nbsp;: <span style="color:var(--cyan)">180C</span></div>
+          <div>Caract. UUID &nbsp;: <span style="color:var(--cyan)">2A56</span></div>
+          <div>Intervalle &nbsp;&nbsp;&nbsp;: <span style="color:var(--cyan)">500 ms</span></div>
+          <div>Format &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span style="color:var(--cyan)">2×int32 (8 bytes)</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════ SETTINGS ══════════ -->
+    <div id="tab-settings" class="screen">
+
+      <div class="card">
+        <div class="card-title">Profil athlète</div>
+        <div class="setting-row">
+          <div><div class="setting-label">Poids (kg)</div></div>
+          <input type="number" id="s-poids" value="75" min="30" max="150">
+        </div>
+        <div class="setting-row">
+          <div><div class="setting-label">Taille (cm)</div></div>
+          <input type="number" id="s-taille" value="175" min="140" max="220">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Alertes</div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Seuil alerte</div>
+            <div class="setting-sub">Vibration si dépassé</div>
+          </div>
+          <input type="number" id="s-seuil" value="80" min="10" max="200" onchange="updateSeuil()">
+        </div>
+        <div class="setting-row">
+          <div>
+            <div class="setting-label">Alertes actives</div>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="s-alerts" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Unités</div>
+        <div class="setting-row">
+          <div class="setting-label">Kilogrammes (kg)</div>
+          <label class="toggle">
+            <input type="checkbox" id="unit-kg" checked onchange="updateUnit('kg')">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-label">Newtons (N)</div>
+          <label class="toggle">
+            <input type="checkbox" id="unit-n" onchange="updateUnit('n')">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const state = {
+  pg: 0, pd: 0, pas: 0,
+  peakG: 0, peakD: 0,
+  seuil: 80,
+  unit: 'kg',          // 'kg' | 'n'
+  demo: false,
+  connected: false,
+  scanning: false,
+  sessionActive: false,
+  sessionStart: null,
+  sessionSecs: 0,
+  demoTick: 0,
+  chartDataG: new Array(60).fill(0),
+  chartDataD: new Array(60).fill(0),
+  ble: null,
+  bleChar: null,
+};
+
+// ══════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+//  UNIT CONVERSION
+// ══════════════════════════════════════════════
+function toDisplay(kg) {
+  return state.unit === 'n' ? Math.round(kg * 9.81) : kg;
+}
+function unitLabel() { return state.unit === 'n' ? 'N' : 'kg'; }
+
+function updateUnit(u) {
+  state.unit = u;
+  document.getElementById('unit-kg').checked = (u === 'kg');
+  document.getElementById('unit-n').checked  = (u === 'n');
+  render();
+}
+
+// ══════════════════════════════════════════════
+//  SEUIL
+// ══════════════════════════════════════════════
+function updateSeuil() {
+  state.seuil = parseInt(document.getElementById('s-seuil').value) || 80;
+}
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+function render() {
+  const g = toDisplay(state.pg);
+  const d = toDisplay(state.pd);
+  const maxVal = state.unit === 'n' ? 1000 : 120;
+
+  // Force values
+  document.getElementById('val-g').textContent = state.demo || state.connected ? g : '--';
+  document.getElementById('val-d').textContent = state.demo || state.connected ? d : '--';
+  document.getElementById('unit-g').textContent = unitLabel();
+  document.getElementById('unit-d').textContent = unitLabel();
+
+  // Bars
+  const pctG = Math.min(100, (state.pg / maxVal) * 100);
+  const pctD = Math.min(100, (state.pd / maxVal) * 100);
+  document.getElementById('bar-g').style.width = pctG + '%';
+  document.getElementById('bar-d').style.width = pctD + '%';
+
+  // Alert coloring
+  const alertG = state.pg >= state.seuil;
+  const alertD = state.pd >= state.seuil;
+  document.getElementById('block-g').classList.toggle('alert', alertG);
+  document.getElementById('block-d').classList.toggle('alert', alertD);
+
+  // Alert banner
+  const alertBanner = document.getElementById('alert-banner');
+  const alertsOn = document.getElementById('s-alerts').checked;
+  if (alertsOn && (alertG || alertD) && (state.demo || state.connected)) {
+    alertBanner.style.display = 'block';
+    if (navigator.vibrate) navigator.vibrate(200);
+  } else {
+    alertBanner.style.display = 'none';
+  }
+
+  // Balance
+  const total = state.pg + state.pd;
+  if (total > 0 && (state.demo || state.connected)) {
+    const pG = Math.round((state.pg / total) * 100);
+    const pD = 100 - pG;
+    document.getElementById('balance-fill').style.width = pG + '%';
+    document.getElementById('pct-g').textContent = pG + '%';
+    document.getElementById('pct-d').textContent = pD + '%';
+  } else {
+    document.getElementById('pct-g').textContent = '--%';
+    document.getElementById('pct-d').textContent = '--%';
+  }
+
+  // Stats
+  document.getElementById('stat-pas').textContent = state.pas;
+  document.getElementById('stat-peak-g').textContent = state.peakG > 0 ? toDisplay(state.peakG) : '--';
+  document.getElementById('stat-peak-d').textContent = state.peakD > 0 ? toDisplay(state.peakD) : '--';
+
+  // Chart data push
+  if (state.demo || state.connected) {
+    state.chartDataG.push(state.pg);
+    state.chartDataD.push(state.pd);
+    if (state.chartDataG.length > 60) state.chartDataG.shift();
+    if (state.chartDataD.length > 60) state.chartDataD.shift();
+    drawChart();
+  }
+
+  // BLE dot
+  const dot = document.getElementById('ble-dot');
+  if (state.demo) {
+    dot.className = 'demo'; dot.textContent = 'DÉMO';
+  } else if (state.connected) {
+    dot.className = 'connected'; dot.textContent = 'CONNECTÉ';
+  } else if (state.scanning) {
+    dot.className = 'scanning'; dot.textContent = 'SCAN...';
+  } else {
+    dot.className = ''; dot.textContent = 'DÉCONNECTÉ';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  CHART
+// ══════════════════════════════════════════════
+function drawChart() {
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth; const H = canvas.offsetHeight;
+  canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#252535'; ctx.lineWidth = 1;
+  for (let i = 1; i < 4; i++) {
+    const y = (H / 4) * i;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  const maxY = 120;
+  function drawLine(data, color) {
+    ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    data.forEach((v, i) => {
+      const x = (i / (data.length - 1)) * W;
+      const y = H - (v / maxY) * H;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Fill
+    ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+    ctx.fillStyle = color.replace(')', ', 0.08)').replace('rgb', 'rgba');
+    ctx.fill();
+  }
+
+  drawLine(state.chartDataG, 'rgb(0, 200, 255)');
+  drawLine(state.chartDataD, 'rgb(255, 107, 0)');
+}
+
+// ══════════════════════════════════════════════
+//  DEMO MODE
+// ══════════════════════════════════════════════
+let demoInterval = null;
+
+function toggleDemo() {
+  state.demo = !state.demo;
+  const btn = document.querySelector('#tab-ble .btn-demo');
+  if (state.demo) {
+    state.pas = 0; state.peakG = 0; state.peakD = 0;
+    state.chartDataG.fill(0); state.chartDataD.fill(0);
+    btn.textContent = '⏹ Stop Démonstration';
+    btn.style.background = '#330022';
+    btn.style.color = 'var(--red)';
+    demoInterval = setInterval(demoTick, 500);
+  } else {
+    btn.textContent = '▶ Mode Démonstration';
+    btn.style.background = ''; btn.style.color = '';
+    clearInterval(demoInterval);
+    state.pg = 0; state.pd = 0;
+    render();
+  }
+}
+
+function demoTick() {
+  state.demoTick++;
+  // Sinusoïde + bruit pour simuler marche
+  const t = state.demoTick * 0.3;
+  state.pg = Math.round(45 + 25 * Math.sin(t) + (Math.random() * 10 - 5));
+  state.pd = Math.round(45 + 25 * Math.sin(t + Math.PI * 0.4) + (Math.random() * 10 - 5));
+  state.pg = Math.max(0, state.pg);
+  state.pd = Math.max(0, state.pd);
+  if (state.pg > state.peakG) state.peakG = state.pg;
+  if (state.pd > state.peakD) state.peakD = state.pd;
+  if (state.demoTick % 3 === 0) state.pas++;
+  render();
+}
+
+// ══════════════════════════════════════════════
+//  BLE
+// ══════════════════════════════════════════════
+async function startScan() {
+  if (!navigator.bluetooth) {
+    alert('Web Bluetooth non supporté sur ce navigateur.\nUtilise Chrome sur Android.');
+    return;
+  }
+  state.scanning = true; render();
+  document.getElementById('scan-indicator').style.display = 'block';
+  document.getElementById('ble-list').innerHTML = '';
+
+  try {
+    const device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: ['0000180c-0000-1000-8000-00805f9b34fb']
+    });
+
+    state.scanning = false;
+    document.getElementById('scan-indicator').style.display = 'none';
+
+    appendBleItem(device.name || 'Appareil inconnu', device.id, async () => {
+      await connectDevice(device);
+    });
+
+  } catch(e) {
+    state.scanning = false;
+    document.getElementById('scan-indicator').style.display = 'none';
+    render();
+    if (e.name !== 'NotFoundError') alert('Erreur: ' + e.message);
+  }
+}
+
+function appendBleItem(name, addr, onclick) {
+  const list = document.getElementById('ble-list');
+  const el = document.createElement('div');
+  el.className = 'ble-item';
+  el.innerHTML = `
+    <div>
+      <div class="ble-name">${name}</div>
+      <div class="ble-addr">${addr.substring(0,20)}</div>
+    </div>
+    <div class="ble-rssi">Se connecter ▶</div>
+  `;
+  el.onclick = onclick;
+  list.appendChild(el);
+}
+
+async function connectDevice(device) {
+  try {
+    const server = await device.gatt.connect();
+    const service = await server.getPrimaryService('0000180c-0000-1000-8000-00805f9b34fb');
+    const char = await service.getCharacteristic('00002a56-0000-1000-8000-00805f9b34fb');
+
+    state.bleChar = char;
+    state.connected = true;
+    if (state.demo) { clearInterval(demoInterval); state.demo = false; }
+    render();
+
+    await char.startNotifications();
+    char.addEventListener('characteristicvaluechanged', onBleData);
+
+    device.addEventListener('gattserverdisconnected', () => {
+      state.connected = false; render();
+    });
+  } catch(e) {
+    alert('Connexion échouée: ' + e.message);
+  }
+}
+
+function onBleData(event) {
+  const view = event.target.value;
+  if (view.byteLength >= 8) {
+    state.pg = view.getInt32(0, true);
+    state.pd = view.getInt32(4, true);
+    if (state.pg > state.peakG) state.peakG = state.pg;
+    if (state.pd > state.peakD) state.peakD = state.pd;
+    render();
+  }
+}
+
+// ══════════════════════════════════════════════
+//  SESSION
+// ══════════════════════════════════════════════
+let sessionInterval = null;
+
+function toggleSession() {
+  state.sessionActive = !state.sessionActive;
+  const btn = document.getElementById('btn-start');
+  if (state.sessionActive) {
+    state.sessionStart = Date.now() - state.sessionSecs * 1000;
+    btn.textContent = '⏹ Arrêter';
+    btn.style.background = 'var(--red)';
+    sessionInterval = setInterval(() => {
+      state.sessionSecs = Math.floor((Date.now() - state.sessionStart) / 1000);
+      const m = String(Math.floor(state.sessionSecs / 60)).padStart(2, '0');
+      const s = String(state.sessionSecs % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = m + ':' + s;
+    }, 1000);
+  } else {
+    clearInterval(sessionInterval);
+    btn.textContent = '▶ Démarrer';
+    btn.style.background = '';
+  }
+}
+
+function resetSession() {
+  clearInterval(sessionInterval);
+  state.sessionActive = false; state.sessionSecs = 0;
+  document.getElementById('timer').textContent = '00:00';
+  document.getElementById('btn-start').textContent = '▶ Démarrer';
+  document.getElementById('btn-start').style.background = '';
+  state.chartDataG.fill(0); state.chartDataD.fill(0);
+  state.peakG = 0; state.peakD = 0;
+  drawChart(); render();
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+render();
+drawChart();
+</script>
+</body>
+</html>
